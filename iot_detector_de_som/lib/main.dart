@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+ThemeMode appTheme = ThemeMode.system; //dark / light
 
 void main() {
   runApp(const MyApp());
