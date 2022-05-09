@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'Decibeis.dart';
 
 ThemeMode appTheme = ThemeMode.system; //dark / light
 
-void main() {
-  runApp(const MyApp());
+class DecibelApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
+class _MyAppState extends State<DecibelApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
 
-        primarySwatch: Colors.blue,
+      title: 'Medidor de Decibeis',
+      home: NoiseApp(),
+      darkTheme: ThemeData.dark().copyWith(
+        textTheme: ThemeData.dark().textTheme.apply(
+          fontFamily: GoogleFonts.comfortaa().fontFamily,
+        ),
+        primaryTextTheme: ThemeData.dark().textTheme.apply(
+          fontFamily: GoogleFonts.comfortaa().fontFamily,
+        ),
+        accentTextTheme: ThemeData.dark().textTheme.apply(
+          fontFamily: GoogleFonts.comfortaa().fontFamily,
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      theme: ThemeData(
+        fontFamily: GoogleFonts.comfortaa().fontFamily,
+      ),
+      themeMode: appTheme, //Atribuindo ao Tema do Aplictivo como sendo o tema do sistema operacional do dispositivo
     );
   }
 }
@@ -67,11 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+
     );
   }
 }
