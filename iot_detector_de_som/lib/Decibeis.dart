@@ -15,13 +15,11 @@ class NoiseApp extends StatefulWidget {
 
 class _NoiseAppState extends State<NoiseApp> {
   bool _isRecording = false;
-  // ignore: cancel_subscriptions
   StreamSubscription<NoiseReading>? _noiseSubscription;
   late NoiseMeter _noiseMeter;
   double? maxDB;
   double? meanDB;
   List<_ChartData> chartData = <_ChartData>[];
-  // ChartSeriesController? _chartSeriesController;
   late int previousMillis;
 
   @override
@@ -68,7 +66,7 @@ class _NoiseAppState extends State<NoiseApp> {
 
       this.setState(() => this._isRecording = false);
     } catch (e) {
-      print('stopRecorder error: $e');
+      print('Erro ao parar a Leitura: $e');
     }
     previousMillis = 0;
     chartData.clear();
@@ -79,7 +77,7 @@ class _NoiseAppState extends State<NoiseApp> {
       ) {
     Clipboard.setData(
       ClipboardData(
-          text: 'It\'s about ${maxDB!.toStringAsFixed(1)}dB loudness'),
+          text: 'Valor copiado foi de ${maxDB!.toStringAsFixed(1)}decibeis'),
     ).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -93,7 +91,7 @@ class _NoiseAppState extends State<NoiseApp> {
                 color: theme ? Colors.white70 : Colors.black,
               ),
               SizedBox(width: 10),
-              Text('Copied')
+              Text('Valores Copiados')
             ],
           ),
         ),
@@ -122,14 +120,14 @@ class _NoiseAppState extends State<NoiseApp> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: _isDark ? Colors.green : Colors.green.shade800,
-        title: Text('dB Sound Meter'),
+        title: Text('Medidor de Decibeis'),
         actions: [
           IconButton(
-              tooltip: 'Source code on GitHub',
+              tooltip: 'Codigo Fonte no Github',
               icon: Icon(Icons.code_outlined),
               onPressed: openGithub),
           IconButton(
-            tooltip: 'Copy value to clipboard',
+            tooltip: 'Copiar os valores',
             icon: Icon(Icons.copy),
             onPressed: maxDB != null ? () => copyValue(_isDark) : null,
           )
@@ -137,7 +135,7 @@ class _NoiseAppState extends State<NoiseApp> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
-        label: Text(_isRecording ? 'Stop' : 'Start'),
+        label: Text(_isRecording ? 'Parar ' : 'Iniciar'),
         onPressed: _isRecording ? stop : start,
         icon: !_isRecording ? Icon(Icons.circle) : null,
         backgroundColor: _isRecording ? Colors.red : Colors.green,
@@ -149,7 +147,7 @@ class _NoiseAppState extends State<NoiseApp> {
               flex: 2,
               child: Center(
                 child: Text(
-                  maxDB != null ? maxDB!.toStringAsFixed(2) : 'Press start',
+                  maxDB != null ? maxDB!.toStringAsFixed(2) : 'Pressione Iniciar',
                   style: GoogleFonts.exo2(fontSize: 76),
                 ),
               ),
@@ -157,7 +155,7 @@ class _NoiseAppState extends State<NoiseApp> {
             Text(
               meanDB != null
                   ? 'Mean: ${meanDB!.toStringAsFixed(2)}'
-                  : 'Awaiting data',
+                  : 'Aguardando leitura',
               style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14),
             ),
             Expanded(
@@ -165,13 +163,15 @@ class _NoiseAppState extends State<NoiseApp> {
                 series: <LineSeries<_ChartData, double>>[
                   LineSeries<_ChartData, double>(
                       dataSource: chartData,
-                      xAxisName: 'Time',
+                      color: Color(0xFFFFFD),
+                      xAxisName: 'Tempo',
                       yAxisName: 'dB',
-                      name: 'dB values over time',
+                      name: 'Linha do Tempo',
                       xValueMapper: (_ChartData value, _) => value.frames,
                       yValueMapper: (_ChartData value, _) => value.maxDB,
                       animationDuration: 0),
-                ],
+
+          ],
               ),
             ),
             SizedBox(

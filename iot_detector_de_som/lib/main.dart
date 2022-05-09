@@ -4,12 +4,14 @@ import 'Decibeis.dart';
 
 ThemeMode appTheme = ThemeMode.system; //dark / light
 
+void main() => runApp(DecibelApp());
+
 class DecibelApp extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _DecibelAppState createState() => _DecibelAppState();
 }
 
-class _MyAppState extends State<DecibelApp> {
+class _DecibelAppState extends State<DecibelApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
