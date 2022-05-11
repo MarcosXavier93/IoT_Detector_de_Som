@@ -5,12 +5,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-
+import 'Dart.dart';
 
 class NoiseApp extends StatefulWidget {
   @override
   _NoiseAppState createState() => _NoiseAppState();
+}
+
+class _ChartData {
+  final double? maxDB;
+  final double? meanDB;
+  final double frames;
+
+  _ChartData(this.maxDB, this.meanDB, this.frames);
 }
 
 class _NoiseAppState extends State<NoiseApp> {
@@ -110,6 +117,10 @@ class _NoiseAppState extends State<NoiseApp> {
       ));
     }
   }
+  openSetting()  {
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -123,16 +134,13 @@ class _NoiseAppState extends State<NoiseApp> {
         title: Text('Medidor de Decibeis'),
         actions: [
           IconButton(
-              tooltip: 'Codigo Fonte no Github',
-              icon: Icon(Icons.code_outlined),
-              onPressed: openGithub),
-          IconButton(
-            tooltip: 'Copiar os valores',
-            icon: Icon(Icons.copy),
-            onPressed: maxDB != null ? () => copyValue(_isDark) : null,
-          )
+            tooltip: 'Configuracoes',
+            icon: Icon(Icons.settings_applications),
+              onPressed: openSetting(),)
         ],
       ),
+
+
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
         label: Text(_isRecording ? 'Parar ' : 'Iniciar'),
@@ -140,30 +148,41 @@ class _NoiseAppState extends State<NoiseApp> {
         icon: !_isRecording ? Icon(Icons.circle) : null,
         backgroundColor: _isRecording ? Colors.red : Colors.green,
       ),
-      body: Container(
+
+
+      body:
+
+    GestureDetector(
+    onTap: () {
+
+      copyValue(_isDark);
+
+    },
         child: Column(
+
           children: [
+
             Expanded(
+
               flex: 2,
-              child: Center(
+
+              child:Align (
+
                 child: Text(
-                  maxDB != null ? maxDB!.toStringAsFixed(2) : 'Pressione Iniciar',
-                  style: GoogleFonts.exo2(fontSize: 76),
+                  maxDB != null ? maxDB!.toStringAsFixed(3) : 'Pressione Iniciar',
+                  style: GoogleFonts.exo2(fontSize: 50),
+
                 ),
+
               ),
-            ),
-            Text(
-              meanDB != null
-                  ? 'Mean: ${meanDB!.toStringAsFixed(2)}'
-                  : 'Aguardando leitura',
-              style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14),
             ),
             Expanded(
               child: SfCartesianChart(
+
                 series: <LineSeries<_ChartData, double>>[
                   LineSeries<_ChartData, double>(
                       dataSource: chartData,
-                      color: Color(0xFFFFFD),
+                      color: Colors.deepPurple,
                       xAxisName: 'Tempo',
                       yAxisName: 'dB',
                       name: 'Linha do Tempo',
@@ -173,8 +192,10 @@ class _NoiseAppState extends State<NoiseApp> {
 
           ],
               ),
+
             ),
             SizedBox(
+
               height: 68,
             ),
           ],
@@ -184,10 +205,3 @@ class _NoiseAppState extends State<NoiseApp> {
   }
 }
 
-class _ChartData {
-  final double? maxDB;
-  final double? meanDB;
-  final double frames;
-
-  _ChartData(this.maxDB, this.meanDB, this.frames);
-}
