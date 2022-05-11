@@ -150,58 +150,54 @@ class _NoiseAppState extends State<NoiseApp> {
       ),
 
 
-      body:
+      body: GestureDetector(
+      onTap: () {
+        copyValue(_isDark);
+      },
 
-    GestureDetector(
-    onTap: () {
+          child: Column(
+            children: [
 
-      copyValue(_isDark);
+              Expanded(
 
-    },
-        child: Column(
+                flex: 2,
 
-          children: [
+                child:Align (
 
-            Expanded(
+                  child: Text(
+                    maxDB != null ? maxDB!.toStringAsFixed(3) : 'Pressione Iniciar',
+                    style: GoogleFonts.exo2(fontSize: 50),
 
-              flex: 2,
+                  ),
 
-              child:Align (
+                ),
+              ),
+              Expanded(
+                child: SfCartesianChart(
 
-                child: Text(
-                  maxDB != null ? maxDB!.toStringAsFixed(3) : 'Pressione Iniciar',
-                  style: GoogleFonts.exo2(fontSize: 50),
+                  series: <LineSeries<_ChartData, double>>[
+                    LineSeries<_ChartData, double>(
+                        dataSource: chartData,
+                        color: Colors.deepPurple,
+                        xAxisName: 'Tempo',
+                        yAxisName: 'dB',
+                        name: 'Linha do Tempo',
+                        xValueMapper: (_ChartData value, _) => value.frames,
+                        yValueMapper: (_ChartData value, _) => value.maxDB,
+                        animationDuration: 0),
 
+            ],
                 ),
 
               ),
-            ),
-            Expanded(
-              child: SfCartesianChart(
+              SizedBox(
 
-                series: <LineSeries<_ChartData, double>>[
-                  LineSeries<_ChartData, double>(
-                      dataSource: chartData,
-                      color: Colors.deepPurple,
-                      xAxisName: 'Tempo',
-                      yAxisName: 'dB',
-                      name: 'Linha do Tempo',
-                      xValueMapper: (_ChartData value, _) => value.frames,
-                      yValueMapper: (_ChartData value, _) => value.maxDB,
-                      animationDuration: 0),
-
-          ],
+                height: 68,
               ),
-
-            ),
-            SizedBox(
-
-              height: 68,
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }
 
