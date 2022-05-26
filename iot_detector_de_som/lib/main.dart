@@ -25,9 +25,6 @@ class _DecibelAppState extends State<DecibelApp> {
         primaryTextTheme: ThemeData.dark().textTheme.apply(
           fontFamily: GoogleFonts.comfortaa().fontFamily,
         ),
-        accentTextTheme: ThemeData.dark().textTheme.apply(
-          fontFamily: GoogleFonts.comfortaa().fontFamily,
-        ),
       ),
       theme: ThemeData(
         fontFamily: GoogleFonts.comfortaa().fontFamily,

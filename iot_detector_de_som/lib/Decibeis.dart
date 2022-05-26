@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iot_detector_de_som/OnLineView.dart';
+import 'package:iot_detector_de_som/UserList.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'Dart.dart';
 
+
+bool inicio=true;
 class NoiseApp extends StatefulWidget {
   @override
   _NoiseAppState createState() => _NoiseAppState();
@@ -16,6 +18,7 @@ class _ChartData {
   final double? maxDB;
   final double? meanDB;
   final double frames;
+
 
   _ChartData(this.maxDB, this.meanDB, this.frames);
 }
@@ -36,8 +39,8 @@ class _NoiseAppState extends State<NoiseApp> {
   }
 
   void onData(NoiseReading noiseReading) {
-    this.setState(() {
-      if (!this._isRecording) this._isRecording = true;
+    setState(() {
+      if (!_isRecording) _isRecording = true;
     });
     maxDB = noiseReading.maxDecibel;
     meanDB = noiseReading.meanDecibel;
@@ -71,7 +74,7 @@ class _NoiseAppState extends State<NoiseApp> {
       _noiseSubscription!.cancel();
       _noiseSubscription = null;
 
-      this.setState(() => this._isRecording = false);
+      setState(() => _isRecording = false);
     } catch (e) {
       print('Erro ao parar a Leitura: $e');
     }
@@ -89,7 +92,7 @@ class _NoiseAppState extends State<NoiseApp> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          duration: Duration(milliseconds: 2500),
+          duration: const Duration(milliseconds: 2500),
           content: Row(
             children: [
               Icon(
@@ -97,8 +100,8 @@ class _NoiseAppState extends State<NoiseApp> {
                 size: 14,
                 color: theme ? Colors.white70 : Colors.black,
               ),
-              SizedBox(width: 10),
-              Text('Valores Copiados')
+              const SizedBox(width: 10),
+              const Text('Valores Copiados')
             ],
           ),
         ),
@@ -106,17 +109,7 @@ class _NoiseAppState extends State<NoiseApp> {
     });
   }
 
-  openGithub() async {
-    const url = 'https://github.com/MarcosXavier93/IoT_Detector_de_Som/tree/main/iot_detector_de_som';
-    try {
-      await launch(url);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Erro ao abrir a Url $url'),
-        backgroundColor: Colors.red,
-      ));
-    }
-  }
+
   openSetting()  {
 
   }
@@ -131,12 +124,18 @@ class _NoiseAppState extends State<NoiseApp> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: _isDark ? Colors.green : Colors.green.shade800,
-        title: Text('Medidor de Decibeis'),
+        title: const Text('Medidor de Decibeis'),
         actions: [
           IconButton(
-            tooltip: 'Configuracoes',
-            icon: Icon(Icons.settings_applications),
-              onPressed: openSetting(),)
+            tooltip: 'Visualizar Dispositivo On-Line',
+            icon: const Icon(Icons.settings_applications),
+              onPressed: (){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context)=> UserList() ),
+              );
+            }
+
+          )
         ],
       ),
 
@@ -145,58 +144,61 @@ class _NoiseAppState extends State<NoiseApp> {
       floatingActionButton: FloatingActionButton.extended(
         label: Text(_isRecording ? 'Parar ' : 'Iniciar'),
         onPressed: _isRecording ? stop : start,
-        icon: !_isRecording ? Icon(Icons.circle) : null,
+        icon: !_isRecording ? const Icon(Icons.circle) : null,
         backgroundColor: _isRecording ? Colors.red : Colors.green,
       ),
 
 
-      body: GestureDetector(
-      onTap: () {
-        copyValue(_isDark);
-      },
+      body:
+          GestureDetector(
+          onTap: () {
+            copyValue(_isDark);
+          },
 
-          child: Column(
-            children: [
 
-              Expanded(
+              child: Column(
+                children: [
 
-                flex: 2,
+                  Expanded(
 
-                child:Align (
+                    flex: 2,
 
-                  child: Text(
-                    maxDB != null ? maxDB!.toStringAsFixed(3) : 'Pressione Iniciar',
-                    style: GoogleFonts.exo2(fontSize: 50),
+                    child:Align (
+
+                      child: Text(
+
+                          maxDB != null ? maxDB!.toStringAsFixed(3) : 'Pressione Iniciar',
+                        style: GoogleFonts.exo2(fontSize: 50),
+
+                      ),
+
+                    ),
+                  ),
+                  Expanded(
+                    child: SfCartesianChart(
+
+                      series: <LineSeries<_ChartData, double>>[
+                        LineSeries<_ChartData, double>(
+                            dataSource: chartData,
+                            color: Colors.deepPurple,
+                            xAxisName: 'Tempo',
+                            yAxisName: 'dB',
+                            name: 'Linha do Tempo',
+                            xValueMapper: (_ChartData value, _) => value.frames,
+                            yValueMapper: (_ChartData value, _) => value.maxDB,
+                            animationDuration: 0),
+
+                ],
+                    ),
 
                   ),
+                  const SizedBox(
 
-                ),
+                    height: 68,
+                  ),
+                ],
               ),
-              Expanded(
-                child: SfCartesianChart(
-
-                  series: <LineSeries<_ChartData, double>>[
-                    LineSeries<_ChartData, double>(
-                        dataSource: chartData,
-                        color: Colors.deepPurple,
-                        xAxisName: 'Tempo',
-                        yAxisName: 'dB',
-                        name: 'Linha do Tempo',
-                        xValueMapper: (_ChartData value, _) => value.frames,
-                        yValueMapper: (_ChartData value, _) => value.maxDB,
-                        animationDuration: 0),
-
-            ],
-                ),
-
-              ),
-              SizedBox(
-
-                height: 68,
-              ),
-            ],
-          ),
-        ),
+            ),
       );
   }
 }
