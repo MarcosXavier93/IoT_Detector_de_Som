@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'Decibeis.dart';
+import 'TelaInicial.dart';
 
 ThemeMode appTheme = ThemeMode.system; //dark / light
 
@@ -17,7 +17,7 @@ class _DecibelAppState extends State<DecibelApp> {
     return MaterialApp(
 
       title: 'Medidor de Decibeis',
-      home: NoiseApp(),
+      home: TelaInicialApp(),
       darkTheme: ThemeData.dark().copyWith(
         textTheme: ThemeData.dark().textTheme.apply(
           fontFamily: GoogleFonts.comfortaa().fontFamily,
